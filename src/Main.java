@@ -1,5 +1,5 @@
 import db.Database;
-import db.exception.EntityNotFoundException;
+import db.exception.*;
 import example.Human;
 
 import java.util.UUID;
@@ -27,12 +27,7 @@ public class Main {
         System.out.println("#### Test get method ####");
 
         UUID gholiId = humans[0].id;
-        Human gholi = null;
-        try {
-            gholi = (Human) Database.get(gholiId);
-        } catch (EntityNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        Human gholi = (Human) Database.get(gholiId);
 
         System.out.println("successfully got " + gholi.name + " from the database.");
 
@@ -40,29 +35,16 @@ public class Main {
         System.out.println("#### Test update method ####");
 
         gholi.name = "Gholi Mohammadi";
-        try {
-            Database.update(gholi);
-        } catch (EntityNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
+        Database.update(gholi);
 
-        Human gholiAgain = null;
-        try {
-            gholiAgain = (Human) Database.get(gholiId);
-        } catch (EntityNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        Human gholiAgain = (Human) Database.get(gholiId);
         System.out.println("Updated name: \"" + gholiAgain.name + "\".");
 
         System.out.println();
         System.out.println("#### Test delete method ####");
 
         UUID jamshidId = humans[1].id;
-        try {
-            Database.delete(jamshidId);
-        } catch (EntityNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
+        Database.delete(jamshidId);
 
         try {
             Human jamshid = (Human) Database.get(jamshidId);
