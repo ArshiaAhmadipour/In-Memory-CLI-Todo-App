@@ -27,7 +27,12 @@ public class Main {
         System.out.println("#### Test get method ####");
 
         UUID gholiId = humans[0].id;
-        Human gholi = (Human) Database.get(gholiId);
+        Human gholi = null;
+        try {
+            gholi = (Human) Database.get(gholiId);
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         System.out.println("successfully got " + gholi.name + " from the database.");
 
@@ -41,7 +46,12 @@ public class Main {
             System.out.println(e.getMessage());
         }
 
-        Human gholiAgain = (Human) Database.get(gholiId);
+        Human gholiAgain = null;
+        try {
+            gholiAgain = (Human) Database.get(gholiId);
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         System.out.println("Updated name: \"" + gholiAgain.name + "\".");
 
         System.out.println();
