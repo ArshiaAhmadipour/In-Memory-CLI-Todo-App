@@ -1,5 +1,7 @@
 package db;
 
+import db.exception.EntityNotFoundException;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
