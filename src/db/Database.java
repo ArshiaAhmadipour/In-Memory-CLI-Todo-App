@@ -14,22 +14,22 @@ public class Database {
     public static void add(Entity e){
         e.id = UUID.randomUUID();
         System.out.println("Entity added successfully. id: " + e.id);
-        entities.add(e);
+        entities.add(e.copy());
     }
 
     public static Entity get(UUID id) throws EntityNotFoundException{
-        for(Entity e : entities){
-            if(e.id == id){
-                return e;
+        for(Entity entity : entities){
+            if(entity.id == id){
+                return entity.copy();
             }
         }
         throw new EntityNotFoundException("Entity not found.");
     }
 
     public static void delete(UUID id) throws EntityNotFoundException{
-        for(Entity e : entities){
-            if(e.id == id){
-                entities.remove(e);
+        for(Entity entity : entities){
+            if(entity.id == id){
+                entities.remove(entity);
                 System.out.println("Entity deleted.");
                 return;
             }
@@ -37,11 +37,11 @@ public class Database {
         throw new EntityNotFoundException("Entity not found to delete.");
     }
 
-    public static void update(Entity e) throws EntityNotFoundException{
+    public static void update(Entity entityInput) throws EntityNotFoundException{
         for(Entity entity : entities){
-            if(e.id == entity.id){
+            if(entityInput.id == entity.id){
                 entities.remove(entity);
-                entities.add(e);
+                entities.add(entityInput.copy());
                 System.out.println("Entity updated successfully.");
                 return;
             }
