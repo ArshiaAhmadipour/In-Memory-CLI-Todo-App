@@ -4,21 +4,23 @@ import db.exception.EntityNotFoundException;
 import db.exception.InvalidEntityException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class Database {
-
     private static ArrayList<Entity> entities = new ArrayList<>();
     private static HashMap<Integer, Validator> validators = new HashMap<>();
 
     private Database() {}
 
-    public static void add(Entity e) throws InvalidEntityException{
-        Validator validator = validators.get(e.getEntityCode());
-        validator.validate(e);
-        e.id = UUID.randomUUID();
-        entities.add(e);
+    public static void add(Entity entityInput) throws InvalidEntityException{
+        if(entityInput instanceof Trackable){
+            ((Trackable) entityInput).setCreationDate(new Date());
+        }
+        Database.isValid(entityInput);
+        entityInput.id = UUID.randomUUID();
+        entities.add(entityInput);
         System.out.println("Entity added successfully.");
     }
 
@@ -43,11 +45,13 @@ public class Database {
     }
 
     public static void update(Entity entityInput) throws EntityNotFoundException, InvalidEntityException{
-        Validator validator = validators.get(entityInput.getEntityCode());
         for(Entity entity : entities){
             if(entityInput.id == entity.id){
                 entities.remove(entity);
-                validator.validate(entityInput);
+                Database.isValid(entityInput);
+                if(entityInput instanceof Trackable){
+                    ((Trackable) entityInput).setLastModificationDate(new Date());
+                }
                 entities.add(entityInput.copy());
                 System.out.println("Entity updated successfully.");
                 return;
@@ -64,7 +68,11 @@ public class Database {
         }
     }
 
-
-
-
+    private static void isValid(Entity entity) throws InvalidEntityException{
+        if(entity instanceof Validator) {
+            Validator validator = validators.get(entity.getEntityCode());
+            validator.validate(entity);
+        }
+        return;
+    } //for checking if entity is valid.
 }
