@@ -2,12 +2,13 @@ package todo.entity;
 
 
 import db.Entity;
+import db.Trackable;
 import db.Validator;
 import db.exception.InvalidEntityException;
 
 import java.util.Date;
 
-public class Task extends Entity implements Validator {
+public class Task extends Entity implements Trackable {
     public enum Status{
         Completed , InProgress, NotStarted
     }
@@ -37,8 +38,23 @@ public class Task extends Entity implements Validator {
     }
 
     @Override
-    public void validate(Entity entity) throws InvalidEntityException {
+    public void setCreationDate(Date date) {
 
+    }
+
+    @Override
+    public Date getCreationDate() {
+        return null;
+    }
+
+    @Override
+    public void setLastModificationDate(Date date) {
+
+    }
+
+    @Override
+    public Date getLastModificationDate() {
+        return null;
     }
 }
 

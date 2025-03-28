@@ -16,7 +16,7 @@ public class Step extends Entity {
     @Override
     public Entity copy() {
         String titleCopy = new String(title);
-        int taskRefCopy = taskRef;
+        UUID taskRefCopy = taskRef;
         Step stepCopy = new Step();
         stepCopy.status = status;
         stepCopy.title = titleCopy;
