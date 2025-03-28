@@ -33,6 +33,16 @@ public class Database {
         throw new EntityNotFoundException("Entity not found.");
     }
 
+    public static ArrayList<Entity> getAll(int entityCode) {
+        ArrayList<Entity> returnList = new ArrayList<>();
+        for(Entity entity : entities){
+            if(entity.getEntityCode() == entityCode){
+                returnList.add(entity);
+            }
+        }
+        return returnList;
+    }
+
     public static void delete(UUID id) throws EntityNotFoundException{
         for(Entity entity : entities){
             if(entity.id == id){
