@@ -2,6 +2,8 @@ package todo.entity;
 
 import db.Entity;
 
+import java.util.UUID;
+
 public class Step extends Entity {
     public enum Status{
         Completed, NotStarted
@@ -9,7 +11,7 @@ public class Step extends Entity {
 
     public String title;
     public Status status;
-    public int taskRef;
+    public UUID taskRef;
 
     @Override
     public Entity copy() {
