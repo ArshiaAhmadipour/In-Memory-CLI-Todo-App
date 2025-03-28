@@ -22,7 +22,6 @@ public class Task extends Entity implements Validator {
         String titleCopy = new String(title);
         String descriptionCopy = new String(description);
         Date dueDateCopy = new Date(dueDate.getTime());
-
         Task taskCopy = new Task();
         taskCopy.title = titleCopy;
         taskCopy.description = descriptionCopy;
