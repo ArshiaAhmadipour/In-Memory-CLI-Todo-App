@@ -19,7 +19,17 @@ public class Task extends Entity implements Validator {
 
     @Override
     public Entity copy() {
-        return null;
+        String titleCopy = new String(title);
+        String descriptionCopy = new String(description);
+        Date dueDateCopy = new Date(dueDate.getTime());
+
+        Task taskCopy = new Task();
+        taskCopy.title = titleCopy;
+        taskCopy.description = descriptionCopy;
+        taskCopy.dueDate = dueDateCopy;
+        taskCopy.status = status;
+
+        return taskCopy;
     }
 
     @Override
@@ -31,9 +41,5 @@ public class Task extends Entity implements Validator {
     public void validate(Entity entity) throws InvalidEntityException {
 
     }
-
-
-
-
 }
 
