@@ -46,7 +46,6 @@ public class Database {
         for(Entity entity : entities){
             if(entity.id.equals(id)){
                 entities.remove(entity);
-                System.out.println("Entity deleted.");
                 return;
             }
         }

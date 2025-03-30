@@ -1,9 +1,13 @@
 package todo.service;
 
 import db.Database;
+import db.Entity;
+import db.exception.EntityNotFoundException;
 import db.exception.InvalidEntityException;
+import todo.entity.Step;
 import todo.entity.Task;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.UUID;
@@ -47,6 +51,29 @@ public class TaskService {
             System.out.println("Cannot save task.");
             System.out.println("Invalid Date Format");
 
+        }
+    }
+
+    public static void delete(){
+        Scanner inp = new Scanner(System.in);
+        System.out.print("ID: ");
+        UUID id = UUID.fromString(inp.nextLine());
+        try{
+            ArrayList<Entity> steps = new ArrayList<>();
+            steps = Database.getAll(Step.STEP_ENTITY_CODE);
+            if(!(steps.isEmpty())){
+                for(Entity entity : steps){
+                    if(((Step) entity).taskRef.equals(id)){
+                        Database.delete(entity.id);
+                    }
+                }
+            }
+            Database.delete(id);
+            System.out.println("Task and all it's steps deleted.");
+            System.out.println("Task ID: " + id);
+        } catch (EntityNotFoundException e) {
+            System.out.println("cannot delete Task with id = " + id);
+            System.out.println(e.getMessage());
         }
     }
 }
