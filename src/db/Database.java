@@ -20,12 +20,12 @@ public class Database {
         }
         Database.isValid(entityInput);
         entityInput.id = UUID.randomUUID();
-        entities.add(entityInput);
+        entities.add(entityInput.copy());
     }
 
     public static Entity get(UUID id) throws EntityNotFoundException{
         for(Entity entity : entities){
-            if(entity.id == id){
+            if(entity.id.equals(id)){
                 return entity.copy();
             }
         }
@@ -36,7 +36,7 @@ public class Database {
         ArrayList<Entity> returnList = new ArrayList<>();
         for(Entity entity : entities){
             if(entity.getEntityCode() == entityCode){
-                returnList.add(entity);
+                returnList.add(entity.copy());
             }
         }
         return returnList;
@@ -44,7 +44,7 @@ public class Database {
 
     public static void delete(UUID id) throws EntityNotFoundException{
         for(Entity entity : entities){
-            if(entity.id == id){
+            if(entity.id.equals(id)){
                 entities.remove(entity);
                 System.out.println("Entity deleted.");
                 return;
@@ -55,7 +55,7 @@ public class Database {
 
     public static void update(Entity entityInput) throws EntityNotFoundException, InvalidEntityException{
         for(Entity entity : entities){
-            if(entityInput.id == entity.id){
+            if(entityInput.id.equals(entity.id)){
                 entities.remove(entity);
                 Database.isValid(entityInput);
                 if(entityInput instanceof Trackable){

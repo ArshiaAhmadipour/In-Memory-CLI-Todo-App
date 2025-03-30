@@ -3,10 +3,7 @@ package todo.service;
 import db.Database;
 import db.exception.InvalidEntityException;
 import todo.entity.Task;
-
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.UUID;
@@ -43,9 +40,11 @@ public class TaskService {
                 System.out.println("Task Saved Successfully.");
                 System.out.println("id: " + task.id);
             } catch (InvalidEntityException e) {
+                System.out.println("Cannot save task.");
                 System.out.println(e.getMessage());
             }
         } catch (Exception e) {
+            System.out.println("Cannot save task.");
             System.out.println("Invalid Date Format");
 
         }

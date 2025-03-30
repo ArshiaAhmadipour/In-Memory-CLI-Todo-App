@@ -29,6 +29,7 @@ public class Task extends Entity implements Trackable {
         taskCopy.description = descriptionCopy;
         taskCopy.dueDate = dueDateCopy;
         taskCopy.status = status;
+        taskCopy.id = this.id;
 
         return taskCopy;
     }
