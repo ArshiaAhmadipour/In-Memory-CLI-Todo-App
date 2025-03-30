@@ -21,7 +21,6 @@ public class Database {
         Database.isValid(entityInput);
         entityInput.id = UUID.randomUUID();
         entities.add(entityInput);
-        System.out.println("Entity added successfully.");
     }
 
     public static Entity get(UUID id) throws EntityNotFoundException{
@@ -79,10 +78,7 @@ public class Database {
     }
 
     private static void isValid(Entity entity) throws InvalidEntityException{
-        if(entity instanceof Validator) {
             Validator validator = validators.get(entity.getEntityCode());
             validator.validate(entity);
-        }
-        return;
     } //for checking if entity is valid.
 }

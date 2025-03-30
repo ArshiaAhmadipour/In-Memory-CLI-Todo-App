@@ -9,6 +9,7 @@ import db.exception.InvalidEntityException;
 import java.util.Date;
 
 public class Task extends Entity implements Trackable {
+    public static final int TASK_ENTITY_ID = 10;
     public enum Status{
         Completed , InProgress, NotStarted
     }
@@ -34,7 +35,7 @@ public class Task extends Entity implements Trackable {
 
     @Override
     public int getEntityCode() {
-        return 0;
+        return TASK_ENTITY_ID;
     }
 
     @Override
