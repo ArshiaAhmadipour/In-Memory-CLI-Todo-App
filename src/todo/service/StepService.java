@@ -1,6 +1,7 @@
 package todo.service;
 
 import db.Database;
+import db.exception.EntityNotFoundException;
 import db.exception.InvalidEntityException;
 import todo.entity.Step;
 
@@ -22,6 +23,7 @@ public class StepService {
             throw new RuntimeException("Step is Invalid.");
         }
     }
+
     public static void addStep(){
         Scanner inp = new Scanner(System.in);
         System.out.print("TaskID: ");
@@ -29,5 +31,17 @@ public class StepService {
         System.out.print("Title: ");
         String title = inp.nextLine();
         StepService.saveStep(taskRef, title);
+    }
+
+    public static void delete(){
+        Scanner inp = new Scanner(System.in);
+        System.out.print("Step ID: ");
+        UUID id = UUID.fromString(inp.nextLine());
+        try{
+            Database.delete(id);
+            System.out.println("Step deleted. ID = " + id);
+        }catch (EntityNotFoundException e){
+            System.out.println(e.getMessage());
+        }
     }
 }

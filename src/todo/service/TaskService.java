@@ -76,4 +76,9 @@ public class TaskService {
             System.out.println(e.getMessage());
         }
     }
+
+    public static void update(){
+        Scanner inp = new Scanner(System.in);
+
+    }
 }
