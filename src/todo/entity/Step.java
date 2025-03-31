@@ -12,11 +12,25 @@ public class Step extends Entity implements Trackable {
     public enum Status{
         Completed, NotStarted
     }
-    public String title;
-    public Status status;
+    private String title;
+    private Status status;
     public UUID taskRef;
     private Date creationDate;
     private Date lastModificationDate;
+
+    public Status getStatus() {
+        return status;
+    }
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     @Override
     public void setCreationDate(Date date) {
@@ -40,11 +54,11 @@ public class Step extends Entity implements Trackable {
 
     @Override
     public Entity copy() {
-        String titleCopy = new String(title);
+        String titleCopy = new String(this.getTitle());
         UUID taskRefCopy = taskRef;
         Step stepCopy = new Step();
-        stepCopy.status = status;
-        stepCopy.title = titleCopy;
+        stepCopy.setStatus(this.getStatus());
+        stepCopy.setTitle(titleCopy);
         stepCopy.taskRef = taskRefCopy;
         stepCopy.id = this.id;
         stepCopy.setCreationDate(new Date(creationDate.getTime()));

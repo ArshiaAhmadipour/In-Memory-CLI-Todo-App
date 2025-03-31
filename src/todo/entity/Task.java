@@ -14,23 +14,51 @@ public class Task extends Entity implements Trackable {
         Completed , InProgress, NotStarted
     }
 
-    public String title;
-    public String description;
-    public Date dueDate;
-    public Status status;
+    private String title;
+    private String description;
+    private Date dueDate;
+    private Status status;
     private Date creationDate;
     private Date lastModificationDate;
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public String getDescription(){
+        return this.description;
+    }
+    public void setDescription(String description){
+        this.description = description;
+    }
+
+    public String getTitle(){
+        return this.title;
+    }
+    public void setTitle(String title){
+        this.title = title;
+    }
     @Override
     public Entity copy() {
-        String titleCopy = new String(title);
-        String descriptionCopy = new String(description);
-        Date dueDateCopy = new Date(dueDate.getTime());
+        String titleCopy = new String(this.getTitle());
+        String descriptionCopy = new String(this.getDescription());
+        Date dueDateCopy = new Date(this.getDueDate().getTime());
         Task taskCopy = new Task();
-        taskCopy.title = titleCopy;
-        taskCopy.description = descriptionCopy;
-        taskCopy.dueDate = dueDateCopy;
-        taskCopy.status = status;
+        taskCopy.setTitle(titleCopy);
+        taskCopy.setDescription(descriptionCopy);
+        taskCopy.setDueDate(dueDateCopy);
+        taskCopy.setStatus(this.getStatus());
         taskCopy.id = this.id;
 
         return taskCopy;

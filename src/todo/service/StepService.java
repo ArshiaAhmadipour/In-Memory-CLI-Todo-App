@@ -12,8 +12,8 @@ public class StepService {
     public static void saveStep(UUID taskRef, String title) {
         Step step = new Step();
         step.taskRef = taskRef;
-        step.status = Step.Status.NotStarted;
-        step.title = title;
+        step.setStatus(Step.Status.NotStarted);
+        step.setTitle(title);
         try {
             Database.add(step);
             System.out.println("Step saved successfully.");
@@ -56,8 +56,8 @@ public class StepService {
                     System.out.println(e.getMessage());
                 }
             }else {
-                String temp = step.title;
-                step.title = newValue;
+                String temp = step.getTitle();
+                step.setTitle(newValue);
                 try{
                     Database.update(step);
                     System.out.println("Step successfully updated.");
@@ -80,13 +80,13 @@ public class StepService {
             Step step = (Step) Database.get(id);
             switch (option){
                 case 1: {
-                    String temp = String.valueOf(step.status);
-                    step.status = Step.Status.Completed;
+                    String temp = String.valueOf(step.getStatus());
+                    step.setStatus(Step.Status.Completed);
                     try {
                         Database.update(step);
                         System.out.println("Step's status changed.");
                         System.out.println("Old status: " + temp);
-                        System.out.println("New status: " + step.status);
+                        System.out.println("New status: " + step.getStatus());
                         System.out.println("Modification Date: " + step.getLastModificationDate());
                         TaskService.checkTaskStatus(step.taskRef);
                     } catch (InvalidEntityException e) {
@@ -96,13 +96,13 @@ public class StepService {
                     break;
                 }
                 case 2: {
-                    String temp = String.valueOf(step.status);
-                    step.status = Step.Status.NotStarted;
+                    String temp = String.valueOf(step.getStatus());
+                    step.setStatus(Step.Status.NotStarted);
                     try{
                         Database.update(step);
                         System.out.println("Step's status changed.");
                         System.out.println("Old status: " + temp);
-                        System.out.println("New status: " + step.status);
+                        System.out.println("New status: " + step.getStatus());
                         System.out.println("Modification Date: " + step.getLastModificationDate());
                         TaskService.checkTaskStatus(step.taskRef);
                     }catch (InvalidEntityException e){
