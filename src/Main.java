@@ -107,6 +107,8 @@ public class Main {
                             System.out.println("New TaskID: ");
                             String newValue = inp.nextLine();
                             StepService.update(id, field, newValue, true);
+                            System.out.println("=====");
+                            break;
                         }
                         case "status": {
                             System.out.print("\nWhat is the status?\n1.Completed\n2.Not started\nyour option: ");
@@ -134,6 +136,21 @@ public class Main {
                     System.out.print("Task ID: ");
                     UUID id = UUID.fromString(inp.nextLine());
                     TaskService.getTaskByID(id);
+                    System.out.println("=====");
+                    break;
+                }
+                case "get incomplete tasks":
+                case "get incomplete":
+                case "get itasks":
+                case "get tasks incomplete":{
+                    TaskService.getTaskIncomplete();
+                    System.out.println("=====");
+                    break;
+                }
+                case "get tasks":
+                case "get all tasks":
+                case "get tasks all":{
+                    TaskService.getTaskAll();
                     System.out.println("=====");
                     break;
                 }

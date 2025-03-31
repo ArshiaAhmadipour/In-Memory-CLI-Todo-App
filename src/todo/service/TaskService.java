@@ -268,15 +268,36 @@ public class TaskService {
             System.out.println("Due Date: " + task.dueDate);
             System.out.println("ID: " + task.id);
             System.out.println("Status: " + task.status);
-            System.out.println("Steps:");
-            for(Step step: steps){
-                System.out.print("\t+ " + step.title + "\n");
-                System.out.print("\t\tID: " + step.id + "\n");
-                System.out.print("\t\tStatus: " + step.status + "\n");
+            if(steps.isEmpty()){
+                System.out.println("Steps: no steps for this task.");
+            }else{
+                for(Step step: steps){
+                    System.out.print("\t+ " + step.title + "\n");
+                    System.out.print("\t\tID: " + step.id + "\n");
+                    System.out.print("\t\tStatus: " + step.status + "\n");
+                }
             }
         } catch (EntityNotFoundException e) {
             System.out.println("cannot get Task.");
             System.out.println(e.getMessage());
+        }
+    }
+    public static void getTaskIncomplete(){
+        ArrayList<Entity> Tasks = Database.getAll(Task.TASK_ENTITY_ID);
+        for(Entity entity: Tasks){
+            if(((Task) entity).status.equals(Task.Status.NotStarted) || ((Task) entity).status.equals(Task.Status.InProgress)){
+                TaskService.getTaskByID(((Task) entity).id);
+            }
+        }
+    }
+
+    public static void getTaskAll(){
+        ArrayList<Entity> Tasks = Database.getAll(Task.TASK_ENTITY_ID);
+        int counter = 1;
+        for(Entity entity: Tasks){
+            System.out.println(counter + ":");
+            TaskService.getTaskByID(((Task) entity).id);
+            counter++;
         }
     }
 }
