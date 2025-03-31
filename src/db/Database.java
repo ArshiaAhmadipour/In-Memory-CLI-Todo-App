@@ -39,11 +39,7 @@ public class Database {
                 returnList.add(entity.copy());
             }
         }
-        if(returnList.isEmpty()){
-            throw new RuntimeException("No entity with provided EntityCode found.");
-        }else{
-            return returnList;
-        }
+        return returnList;
     }
 
     public static void delete(UUID id) throws EntityNotFoundException{
