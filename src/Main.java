@@ -90,6 +90,46 @@ public class Main {
                     }
                     break;
                 }
+                case "update step": {
+                    System.out.print("Step ID: ");
+                    UUID id = UUID.fromString(inp.nextLine());
+                    System.out.print("Field: ");
+                    String field = inp.nextLine();
+                    switch (field.toLowerCase()){
+                        case "title": {
+                            System.out.print("New Value: ");
+                            String newValue = inp.nextLine();
+                            StepService.update(id, field, newValue, false);
+                            System.out.println("=====");
+                            break;
+                        }
+                        case "task ref":
+                        case "taskref": {
+                            System.out.println("New TaskID: ");
+                            String newValue = inp.nextLine();
+                            StepService.update(id, field, newValue, true);
+                        }
+                        case "status": {
+                            System.out.print("\nWhat is the status?\n1.Completed\n2.Not started\nyour option: ");
+                            int option = inp.nextInt();
+                            StepService.updateStatus(id, option);
+                            System.out.println("=====");
+                            break;
+                        }
+                        default:{
+                            System.out.println("invalid field.");
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case "delete step": {
+                    System.out.print("Step ID: ");
+                    UUID id = UUID.fromString(inp.nextLine());
+                    StepService.delete(id);
+                    System.out.println("=====");
+                    break;
+                }
                 case "exit":{
                     System.out.println("exiting program...");
                     System.exit(0);

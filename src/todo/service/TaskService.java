@@ -206,4 +206,51 @@ public class TaskService {
             System.out.println(e.getMessage());
         }
     }
+
+    public static void checkTaskStatus(UUID id){
+        try{
+            ArrayList<Entity> steps = Database.getAll(Step.STEP_ENTITY_CODE);
+            ArrayList<Step> taskSteps = new ArrayList<>();
+            int counter = 0;
+            for(Entity entity : steps){
+                if(((Step) entity).taskRef.equals(id)){
+                    taskSteps.add((Step) entity);
+                }
+            }
+            for (Step step : taskSteps){
+                if(step.status.equals(Step.Status.Completed)){
+                    counter++;
+                }
+            }
+            if(counter != 0){
+                if(steps.size() == counter){
+                    Task task = (Task) Database.get(id);
+                    task.status = Task.Status.Completed;
+                    try{
+                        Database.update(task);
+                        System.out.println("###All steps of task complete.");
+                        System.out.println("###task status changed to complete.");
+                    } catch (InvalidEntityException e) {
+                        System.out.println("cannot update Task (all steps complete)");
+                        System.out.println(e.getMessage());
+                    }
+                }else{
+                    Task task = (Task) Database.get(id);
+                    if(task.status.equals(Task.Status.Completed)){
+                        task.status = Task.Status.InProgress;
+                        try{
+                            Database.update(task);
+                            System.out.println("###Not all Task steps complete.");
+                            System.out.println("###Task status changed to In progress.");
+                        } catch (InvalidEntityException e) {
+                            System.out.println("cannot update task (missing complete step error)");
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                }
+            }
+        }catch (RuntimeException e){
+            System.out.println(e.getMessage());
+        }
+    }
 }

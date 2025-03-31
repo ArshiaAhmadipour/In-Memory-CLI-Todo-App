@@ -32,14 +32,18 @@ public class Database {
         throw new EntityNotFoundException("Entity not found.");
     }
 
-    public static ArrayList<Entity> getAll(int entityCode) {
+    public static ArrayList<Entity> getAll(int entityCode){
         ArrayList<Entity> returnList = new ArrayList<>();
         for(Entity entity : entities){
             if(entity.getEntityCode() == entityCode){
                 returnList.add(entity.copy());
             }
         }
-        return returnList;
+        if(returnList.isEmpty()){
+            throw new RuntimeException("No entity with provided EntityCode found.");
+        }else{
+            return returnList;
+        }
     }
 
     public static void delete(UUID id) throws EntityNotFoundException{
