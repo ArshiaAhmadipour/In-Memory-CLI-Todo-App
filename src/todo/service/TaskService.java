@@ -135,12 +135,25 @@ public class TaskService {
                 case 1: {
                     String temp = String.valueOf(task.status);
                     task.status = Task.Status.Completed;
+                    ArrayList<Entity> steps = Database.getAll(Step.STEP_ENTITY_CODE);
+                    for(Entity entity : steps){
+                        if(((Step) entity).taskRef.equals(id)){
+                            ((Step) entity).status = Step.Status.Completed;
+                            try {
+                                Database.update(entity);
+                            } catch (InvalidEntityException e) {
+                                System.out.println("cannot update task.");
+                                System.out.println(e.getMessage());
+                            }
+                        }
+                    }
                     try {
                         Database.update(task);
                         System.out.println("Successfully updated task.");
                         System.out.println("Field: Status");
                         System.out.println("Old Value: " + temp);
                         System.out.println("New Value: Completed");
+                        System.out.println("***all steps has been set to complete***");
                         System.out.println("Modification Date: " + task.getLastModificationDate());
 
                     } catch (InvalidEntityException e) {
