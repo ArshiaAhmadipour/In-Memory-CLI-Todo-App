@@ -24,12 +24,7 @@ public class StepService {
         }
     }
 
-    public static void addStep(){
-        Scanner inp = new Scanner(System.in);
-        System.out.print("TaskID: ");
-        UUID taskRef = UUID.fromString(inp.nextLine());
-        System.out.print("Title: ");
-        String title = inp.nextLine();
+    public static void addStep(UUID taskRef, String title){
         StepService.saveStep(taskRef, title);
     }
 

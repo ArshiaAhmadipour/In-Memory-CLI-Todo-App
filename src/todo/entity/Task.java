@@ -18,6 +18,8 @@ public class Task extends Entity implements Trackable {
     public String description;
     public Date dueDate;
     public Status status;
+    private Date creationDate;
+    private Date lastModificationDate;
 
     @Override
     public Entity copy() {
@@ -41,22 +43,22 @@ public class Task extends Entity implements Trackable {
 
     @Override
     public void setCreationDate(Date date) {
-
+        this.creationDate = date;
     }
 
     @Override
     public Date getCreationDate() {
-        return null;
+        return creationDate;
     }
 
     @Override
     public void setLastModificationDate(Date date) {
-
+        this.lastModificationDate = date;
     }
 
     @Override
     public Date getLastModificationDate() {
-        return null;
+        return lastModificationDate;
     }
 }
 

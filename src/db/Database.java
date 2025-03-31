@@ -61,7 +61,6 @@ public class Database {
                     ((Trackable) entityInput).setLastModificationDate(new Date());
                 }
                 entities.add(entityInput.copy());
-                System.out.println("Entity updated successfully.");
                 return;
             }
         }

@@ -6,13 +6,100 @@ import todo.service.TaskService;
 import todo.validator.StepValidator;
 import todo.validator.TaskValidator;
 
+import java.util.Scanner;
+import java.util.UUID;
+
 
 public class Main {
     public static void main(String[] args) {
         Database.registerValidator(Task.TASK_ENTITY_ID, new TaskValidator());
         Database.registerValidator(Step.STEP_ENTITY_CODE, new StepValidator());
-        TaskService.addTask();
-        StepService.addStep();
-        TaskService.delete();
+        Scanner inp = new Scanner(System.in);
+        while(true){
+            System.out.print("What do you want to do? ");
+            String command = inp.nextLine();
+            command = command.toLowerCase();
+            switch (command){
+                case "add task": {
+                    System.out.print("Title: ");
+                    String title = inp.nextLine();
+                    System.out.print("Description: ");
+                    String description = inp.nextLine();
+                    System.out.print("Date(yyyy-mm-dd format): ");
+                    String dateStr = inp.nextLine();
+                    TaskService.addTask(title, description, dateStr);
+                    System.out.println("=====");
+                    break;
+                }
+                case "add step": {
+                    System.out.print("TaskID: ");
+                    UUID taskRef = UUID.fromString(inp.nextLine());
+                    System.out.print("Title: ");
+                    String title = inp.nextLine();
+                    StepService.addStep(taskRef, title);
+                    System.out.println("=====");
+                    break;
+                }
+                case "delete task": {
+                    System.out.print("ID: ");
+                    UUID id = UUID.fromString(inp.nextLine());
+                    TaskService.delete(id);
+                    System.out.println("=====");
+                    break;
+                }
+                case "update task": {
+                    System.out.print("Task ID: ");
+                    UUID id = UUID.fromString(inp.nextLine());
+                    System.out.print("Field (if date, YYYY-MM-DD format): ");
+                    String field = inp.nextLine();
+                    switch (field.toLowerCase()){
+                        case "title": {
+                            System.out.print("New Value: ");
+                            String newValue = inp.nextLine();
+                            TaskService.update(id, field, newValue, true, false);
+                            System.out.println("=====");
+                            break;
+                        }
+                        case "content":
+                        case "description": {
+                            System.out.print("New Value: ");
+                            String newValue = inp.nextLine();
+                            TaskService.update(id, field, newValue, false, false);
+                            System.out.println("=====");
+                            break;
+                        }
+                        case "date":
+                        case "due date": {
+                            System.out.print("New Value: ");
+                            String newValue = inp.nextLine();
+                            TaskService.update(id, field, newValue, false, true);
+                            System.out.println("=====");
+                            break;
+                        }
+                        case "status": {
+                            System.out.print("\nWhat is the status?\n\n1.Completed\n2.In progress\n3.Not started\nyour option: ");
+                            int option = inp.nextInt();
+                            TaskService.updateStatus(id, option);
+                            System.out.println("=====");
+                            break;
+                        }
+                        default:{
+                            System.out.println("invalid field.");
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case "exit":{
+                    System.out.println("exiting program...");
+                    System.exit(0);
+                }
+                default:{
+                    System.out.println("invalid command, try again.");
+                    System.out.println("=====");
+                    break;
+                }
+            }
+        }
     }
 }
