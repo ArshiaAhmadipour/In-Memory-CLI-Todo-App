@@ -20,24 +20,32 @@ public class Database {
         }
         Database.isValid(entityInput);
         entityInput.id = UUID.randomUUID();
-        entities.add(entityInput);
-        System.out.println("Entity added successfully.");
+        entities.add(entityInput.copy());
     }
 
     public static Entity get(UUID id) throws EntityNotFoundException{
         for(Entity entity : entities){
-            if(entity.id == id){
+            if(entity.id.equals(id)){
                 return entity.copy();
             }
         }
         throw new EntityNotFoundException("Entity not found.");
     }
 
+    public static ArrayList<Entity> getAll(int entityCode){
+        ArrayList<Entity> returnList = new ArrayList<>();
+        for(Entity entity : entities){
+            if(entity.getEntityCode() == entityCode){
+                returnList.add(entity.copy());
+            }
+        }
+        return returnList;
+    }
+
     public static void delete(UUID id) throws EntityNotFoundException{
         for(Entity entity : entities){
-            if(entity.id == id){
+            if(entity.id.equals(id)){
                 entities.remove(entity);
-                System.out.println("Entity deleted.");
                 return;
             }
         }
@@ -46,14 +54,13 @@ public class Database {
 
     public static void update(Entity entityInput) throws EntityNotFoundException, InvalidEntityException{
         for(Entity entity : entities){
-            if(entityInput.id == entity.id){
+            if(entityInput.id.equals(entity.id)){
                 entities.remove(entity);
                 Database.isValid(entityInput);
                 if(entityInput instanceof Trackable){
                     ((Trackable) entityInput).setLastModificationDate(new Date());
                 }
                 entities.add(entityInput.copy());
-                System.out.println("Entity updated successfully.");
                 return;
             }
         }
@@ -69,10 +76,7 @@ public class Database {
     }
 
     private static void isValid(Entity entity) throws InvalidEntityException{
-        if(entity instanceof Validator) {
             Validator validator = validators.get(entity.getEntityCode());
             validator.validate(entity);
-        }
-        return;
     } //for checking if entity is valid.
 }
