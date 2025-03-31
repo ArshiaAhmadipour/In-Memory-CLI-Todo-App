@@ -129,6 +129,14 @@ public class Main {
                     System.out.println("=====");
                     break;
                 }
+                case "get task by id":
+                case "get task": {
+                    System.out.print("Task ID: ");
+                    UUID id = UUID.fromString(inp.nextLine());
+                    TaskService.getTaskByID(id);
+                    System.out.println("=====");
+                    break;
+                }
                 case "exit":{
                     System.out.println("exiting program...");
                     System.exit(0);

@@ -253,4 +253,30 @@ public class TaskService {
             System.out.println(e.getMessage());
         }
     }
+    public static void getTaskByID(UUID id){
+        try{
+            Task task = (Task) Database.get(id);
+            ArrayList<Entity> stepList = Database.getAll(Step.STEP_ENTITY_CODE);
+            ArrayList<Step> steps = new ArrayList<>();
+            for(Entity entity: stepList){
+                if(((Step) entity).taskRef.equals(id)){
+                    steps.add((Step) entity);
+                }
+            }
+            System.out.println("Title: " + task.title);
+            System.out.println("Description: " + task.description);
+            System.out.println("Due Date: " + task.dueDate);
+            System.out.println("ID: " + task.id);
+            System.out.println("Status: " + task.status);
+            System.out.println("Steps:");
+            for(Step step: steps){
+                System.out.print("\t+ " + step.title + "\n");
+                System.out.print("\t\tID: " + step.id + "\n");
+                System.out.print("\t\tStatus: " + step.status + "\n");
+            }
+        } catch (EntityNotFoundException e) {
+            System.out.println("cannot get Task.");
+            System.out.println(e.getMessage());
+        }
+    }
 }
