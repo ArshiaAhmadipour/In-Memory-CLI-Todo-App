@@ -101,9 +101,9 @@ public class Database {
         if (entities.isEmpty()) {
             throw new IllegalArgumentException("No entities to be saved.");
         }
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("db.dat"))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src/db/data/db.dat"))) {
             for (Entity entity : entities) {
-                oos.writeInt(entity.getEntityCode()); //write entity id
+                oos.writeInt(entity.getEntityCode()); //write entity code
                 oos.writeObject(entity.id); //write entity ID
                 oos.writeObject(entity);
             }
@@ -111,7 +111,7 @@ public class Database {
     }
 
     public static void load() throws IOException {
-        File file = new File("db.dat");
+        File file = new File("src/db/data/db.dat");
         if (!file.exists() || file.length() == 0) {
             return;
         }
@@ -119,7 +119,7 @@ public class Database {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             while (true) {
                 try {
-                    int entityCode = ois.readInt(); // read entity id
+                    int entityCode = ois.readInt(); // read entity code
                     UUID entityId = (UUID) ois.readObject(); // read entity id for TaskRef
                     Entity entity = (Entity) ois.readObject();
 

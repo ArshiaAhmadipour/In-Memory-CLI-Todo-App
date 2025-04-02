@@ -271,6 +271,7 @@ public class TaskService {
             if(steps.isEmpty()){
                 System.out.println("Steps: no steps for this task.");
             }else{
+                System.out.println("Steps:");
                 for(Step step: steps){
                     System.out.print("\t+ " + step.getTitle() + "\n");
                     System.out.print("\t\tID: " + step.id + "\n");
