@@ -3,6 +3,7 @@ package db;
 import db.exception.EntityNotFoundException;
 import db.exception.InvalidEntityException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -86,6 +87,17 @@ public class Database {
             throw new IllegalArgumentException("Serializer already exists.");
         }else {
             serializers.put(entityCode, serializer);
+        }
+    }
+
+    private static String serialize(Entity entity) throws InvalidEntityException, IOException {
+        Serializer serializer = serializers.get(entity.getEntityCode());
+        return serializer.serialize(entity);
+    }
+
+    public static void save(){
+        for (Entity entity : entities){
+
         }
     }
 }
