@@ -20,10 +20,17 @@ public class Main {
         Database.registerSerializer(Task.TASK_ENTITY_ID, new TaskSerializer());
         Database.registerSerializer(Step.STEP_ENTITY_CODE, new StepSerializer());
         Scanner inp = new Scanner(System.in);
+        try {
+            Database.load();
+            System.out.println("Database loaded successfully.");
+        } catch (IOException e) {
+            System.err.println("Error: Unable to load database. " + e.getMessage());
+            e.printStackTrace();
+        }
         while(true){
             System.out.print("What do you want to do? ");
             String command = inp.nextLine();
-            command = command.toLowerCase();
+            command = command.trim().toLowerCase();
             switch (command){
                 case "add task": {
                     System.out.print("Title: ");
@@ -154,6 +161,7 @@ public class Main {
                     break;
                 }
                 case "get tasks":
+                case "get all":
                 case "get all tasks":
                 case "get tasks all":{
                     TaskService.getTaskAll();
@@ -168,8 +176,9 @@ public class Main {
                         System.out.println("all entities saved successfully.");
                     } catch (IOException e) {
                         System.out.println("cannot save.");
-                        System.out.println(e.getMessage());
+                        e.printStackTrace();
                     }
+                    break;
                 }
                 case "exit":{
                     System.out.println("exiting program...");

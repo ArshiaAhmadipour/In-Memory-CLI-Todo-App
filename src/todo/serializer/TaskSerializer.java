@@ -11,7 +11,8 @@ public class TaskSerializer implements Serializer {
     @Override
     public String serialize(Entity e) throws IOException {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             ObjectOutputStream oos = new ObjectOutputStream(baos)){
+             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeInt(e.getEntityCode()); // Include entity code so we read it back in loading.
             oos.writeObject(e);
             return baos.toString(StandardCharsets.ISO_8859_1);
         }

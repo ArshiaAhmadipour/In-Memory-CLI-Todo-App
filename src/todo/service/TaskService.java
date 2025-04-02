@@ -284,9 +284,12 @@ public class TaskService {
     }
     public static void getTaskIncomplete(){
         ArrayList<Entity> Tasks = Database.getAll(Task.TASK_ENTITY_ID);
+        int counter = 1;
         for(Entity entity: Tasks){
             if(((Task) entity).getStatus().equals(Task.Status.NotStarted) || ((Task) entity).getStatus().equals(Task.Status.InProgress)){
+                System.out.println(counter + ".");
                 TaskService.getTaskByID(((Task) entity).id);
+                counter++;
             }
         }
     }

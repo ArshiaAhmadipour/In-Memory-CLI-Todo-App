@@ -96,33 +96,46 @@ public class Database {
         return serializer.serialize(entity);
     }
 
-    private static Entity deserialize(String string) throws IOException, ClassNotFoundException {
-        ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes(StandardCharsets.ISO_8859_1));
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        return (Entity) ois.readObject();
-    }
-
     public static void save() throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("db.txt", false))) {
-            for(Entity entity : entities){
-                String serializeEntity = serialize(entity);
-                writer.write(serializeEntity);
-                writer.newLine();
+        System.out.println("Saving entities. Count: " + entities.size());
+        if (entities.isEmpty()) {
+            throw new IllegalArgumentException("No entities to be saved.");
+        }
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("db.dat"))) {
+            for (Entity entity : entities) {
+                oos.writeInt(entity.getEntityCode()); //write entity id
+                oos.writeObject(entity.id); //write entity ID
+                oos.writeObject(entity);
             }
-        } catch (InvalidEntityException e) {
-            throw new RuntimeException(e);
         }
     }
 
-    public static void load() throws IOException{
-        try (BufferedReader reader = new BufferedReader(new FileReader("db.txt"))){
-            String line;
-            while((line = reader.readLine()) != null){
-                Entity entity = deserialize(line);
-                entities.add(entity);
+    public static void load() throws IOException {
+        File file = new File("db.dat");
+        if (!file.exists() || file.length() == 0) {
+            return;
+        }
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            while (true) {
+                try {
+                    int entityCode = ois.readInt(); // read entity id
+                    UUID entityId = (UUID) ois.readObject(); // read entity id for TaskRef
+                    Entity entity = (Entity) ois.readObject();
+
+                    entity.id = entityId;
+                    Serializer serializer = serializers.get(entityCode);
+                    if (serializer == null) {
+                        throw new RuntimeException("No serializer registered for entity: " + entityCode);
+                    }
+
+                    entities.add(entity);
+                } catch (EOFException e) {
+                    break;
+                }
             }
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error deserializing object", e);
         }
     }
 }
