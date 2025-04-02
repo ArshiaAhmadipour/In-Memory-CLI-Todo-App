@@ -3,7 +3,8 @@ package db;
 import db.exception.EntityNotFoundException;
 import db.exception.InvalidEntityException;
 
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -95,9 +96,33 @@ public class Database {
         return serializer.serialize(entity);
     }
 
-    public static void save(){
-        for (Entity entity : entities){
+    private static Entity deserialize(String string) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes(StandardCharsets.ISO_8859_1));
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        return (Entity) ois.readObject();
+    }
 
+    public static void save() throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("db.txt", false))) {
+            for(Entity entity : entities){
+                String serializeEntity = serialize(entity);
+                writer.write(serializeEntity);
+                writer.newLine();
+            }
+        } catch (InvalidEntityException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void load() throws IOException{
+        try (BufferedReader reader = new BufferedReader(new FileReader("db.txt"))){
+            String line;
+            while((line = reader.readLine()) != null){
+                Entity entity = deserialize(line);
+                entities.add(entity);
+            }
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }
