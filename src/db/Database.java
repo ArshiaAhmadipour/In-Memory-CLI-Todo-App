@@ -11,6 +11,7 @@ import java.util.UUID;
 public class Database {
     private static ArrayList<Entity> entities = new ArrayList<>();
     private static HashMap<Integer, Validator> validators = new HashMap<>();
+    private static HashMap<Integer, Serializer> serializers = new HashMap<>();
 
     private Database() {}
 
@@ -79,4 +80,12 @@ public class Database {
             Validator validator = validators.get(entity.getEntityCode());
             validator.validate(entity);
     } //for checking if entity is valid.
+
+    public static void registerSerializer(int entityCode, Serializer serializer){
+        if(serializers.containsKey(entityCode)){
+            throw new IllegalArgumentException("Serializer already exists.");
+        }else {
+            serializers.put(entityCode, serializer);
+        }
+    }
 }
