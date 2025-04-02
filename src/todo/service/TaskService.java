@@ -16,7 +16,7 @@ import java.util.UUID;
 public class TaskService {
     public static void setAsCompleted(UUID taskId) {
         Task task = (Task) Database.get(taskId);
-        task.status = Task.Status.Completed;
+        task.setStatus(Task.Status.Completed);
         try {
             Database.update(task);
         } catch (InvalidEntityException e) {
@@ -28,10 +28,10 @@ public class TaskService {
         Task task = new Task();
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            task.dueDate = formatter.parse(dateStr);
-            task.title = title;
-            task.status = Task.Status.NotStarted;
-            task.description = description;
+            task.setDueDate(formatter.parse(dateStr));
+            task.setTitle(title);
+            task.setStatus(Task.Status.NotStarted);
+            task.setDescription(description);
             try {
                 Database.add(task);
                 System.out.println("Task Saved Successfully.");
@@ -72,8 +72,8 @@ public class TaskService {
             Task task = (Task) Database.get(id);
             if(isTitle){
                 try{
-                    String temp = task.title;
-                    task.title = newValue;
+                    String temp = task.getTitle();
+                    task.setTitle(newValue);
                     Database.update(task);
                     System.out.println("Successfully updated task.");
                     System.out.println("Field: Title");
@@ -88,8 +88,8 @@ public class TaskService {
             } else if (isDate) {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 try {
-                    Date temp = task.dueDate;
-                    task.dueDate = formatter.parse(newValue);
+                    Date temp = task.getDueDate();
+                    task.setDueDate(formatter.parse(newValue));
                     try{
                         Database.update(task);
                         System.out.println("Successfully updated task.");
@@ -107,8 +107,8 @@ public class TaskService {
                 }
 
             }else{
-                String temp = task.description;
-                task.description = newValue;
+                String temp = task.getDescription();
+                task.setDescription(newValue);
                 try {
                     Database.update(task);
                     System.out.println("Successfully updated task.");
@@ -133,12 +133,12 @@ public class TaskService {
             Task task = (Task) Database.get(id);
             switch (option){
                 case 1: {
-                    String temp = String.valueOf(task.status);
-                    task.status = Task.Status.Completed;
+                    String temp = String.valueOf(task.getStatus());
+                    task.setStatus(Task.Status.Completed);
                     ArrayList<Entity> steps = Database.getAll(Step.STEP_ENTITY_CODE);
                     for(Entity entity : steps){
                         if(((Step) entity).taskRef.equals(id)){
-                            ((Step) entity).status = Step.Status.Completed;
+                            ((Step) entity).setStatus(Step.Status.Completed);
                             try {
                                 Database.update(entity);
                             } catch (InvalidEntityException e) {
@@ -163,8 +163,8 @@ public class TaskService {
                     break;
                 }
                 case 2: {
-                    String temp = String.valueOf(task.status);
-                    task.status = Task.Status.InProgress;
+                    String temp = String.valueOf(task.getStatus());
+                    task.setStatus(Task.Status.InProgress);
                     try {
                         Database.update(task);
                         System.out.println("Successfully updated task.");
@@ -180,8 +180,8 @@ public class TaskService {
                     break;
                 }
                 case 3: {
-                    String temp = String.valueOf(task.status);
-                    task.status = Task.Status.NotStarted;
+                    String temp = String.valueOf(task.getStatus());
+                    task.setStatus(Task.Status.NotStarted);
                     try {
                         Database.update(task);
                         System.out.println("Successfully updated task.");
@@ -218,14 +218,14 @@ public class TaskService {
                 }
             }
             for (Step step : taskSteps){
-                if(step.status.equals(Step.Status.Completed)){
+                if(step.getStatus().equals(Step.Status.Completed)){
                     counter++;
                 }
             }
             if(counter != 0){
                 if(steps.size() == counter){
                     Task task = (Task) Database.get(id);
-                    task.status = Task.Status.Completed;
+                    task.setStatus(Task.Status.Completed);
                     try{
                         Database.update(task);
                         System.out.println("###All steps of task complete.");
@@ -236,8 +236,8 @@ public class TaskService {
                     }
                 }else{
                     Task task = (Task) Database.get(id);
-                    if(task.status.equals(Task.Status.Completed)){
-                        task.status = Task.Status.InProgress;
+                    if(task.getStatus().equals(Task.Status.Completed)){
+                        task.setStatus(Task.Status.InProgress);
                         try{
                             Database.update(task);
                             System.out.println("###Not all Task steps complete.");
@@ -263,18 +263,18 @@ public class TaskService {
                     steps.add((Step) entity);
                 }
             }
-            System.out.println("Title: " + task.title);
-            System.out.println("Description: " + task.description);
-            System.out.println("Due Date: " + task.dueDate);
+            System.out.println("Title: " + task.getTitle());
+            System.out.println("Description: " + task.getDescription());
+            System.out.println("Due Date: " + task.getDueDate());
             System.out.println("ID: " + task.id);
-            System.out.println("Status: " + task.status);
+            System.out.println("Status: " + task.getStatus());
             if(steps.isEmpty()){
                 System.out.println("Steps: no steps for this task.");
             }else{
                 for(Step step: steps){
-                    System.out.print("\t+ " + step.title + "\n");
+                    System.out.print("\t+ " + step.getTitle() + "\n");
                     System.out.print("\t\tID: " + step.id + "\n");
-                    System.out.print("\t\tStatus: " + step.status + "\n");
+                    System.out.print("\t\tStatus: " + step.getStatus() + "\n");
                 }
             }
         } catch (EntityNotFoundException e) {
@@ -285,7 +285,7 @@ public class TaskService {
     public static void getTaskIncomplete(){
         ArrayList<Entity> Tasks = Database.getAll(Task.TASK_ENTITY_ID);
         for(Entity entity: Tasks){
-            if(((Task) entity).status.equals(Task.Status.NotStarted) || ((Task) entity).status.equals(Task.Status.InProgress)){
+            if(((Task) entity).getStatus().equals(Task.Status.NotStarted) || ((Task) entity).getStatus().equals(Task.Status.InProgress)){
                 TaskService.getTaskByID(((Task) entity).id);
             }
         }
