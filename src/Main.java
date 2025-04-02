@@ -1,10 +1,14 @@
 import db.Database;
 import todo.entity.Step;
 import todo.entity.Task;
+import todo.serializer.StepSerializer;
+import todo.serializer.TaskSerializer;
 import todo.service.StepService;
 import todo.service.TaskService;
 import todo.validator.StepValidator;
 import todo.validator.TaskValidator;
+
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -13,6 +17,8 @@ public class Main {
     public static void main(String[] args) {
         Database.registerValidator(Task.TASK_ENTITY_ID, new TaskValidator());
         Database.registerValidator(Step.STEP_ENTITY_CODE, new StepValidator());
+        Database.registerSerializer(Task.TASK_ENTITY_ID, new TaskSerializer());
+        Database.registerSerializer(Step.STEP_ENTITY_CODE, new StepSerializer());
         Scanner inp = new Scanner(System.in);
         while(true){
             System.out.print("What do you want to do? ");
@@ -153,6 +159,17 @@ public class Main {
                     TaskService.getTaskAll();
                     System.out.println("=====");
                     break;
+                }
+
+                case "save":
+                case "save all":{
+                    try {
+                        Database.save();
+                        System.out.println("all entities saved successfully.");
+                    } catch (IOException e) {
+                        System.out.println("cannot save.");
+                        System.out.println(e.getMessage());
+                    }
                 }
                 case "exit":{
                     System.out.println("exiting program...");
