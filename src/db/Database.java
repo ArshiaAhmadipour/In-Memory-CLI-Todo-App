@@ -3,6 +3,8 @@ package db;
 import db.exception.EntityNotFoundException;
 import db.exception.InvalidEntityException;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ import java.util.UUID;
 public class Database {
     private static ArrayList<Entity> entities = new ArrayList<>();
     private static HashMap<Integer, Validator> validators = new HashMap<>();
+    private static HashMap<Integer, Serializer> serializers = new HashMap<>();
 
     private Database() {}
 
@@ -79,4 +82,60 @@ public class Database {
             Validator validator = validators.get(entity.getEntityCode());
             validator.validate(entity);
     } //for checking if entity is valid.
+
+    public static void registerSerializer(int entityCode, Serializer serializer){
+        if(serializers.containsKey(entityCode)){
+            throw new IllegalArgumentException("Serializer already exists.");
+        }else {
+            serializers.put(entityCode, serializer);
+        }
+    }
+
+    private static String serialize(Entity entity) throws InvalidEntityException, IOException {
+        Serializer serializer = serializers.get(entity.getEntityCode());
+        return serializer.serialize(entity);
+    }
+
+    public static void save() throws IOException {
+        System.out.println("Saving entities. Count: " + entities.size());
+        if (entities.isEmpty()) {
+            throw new IllegalArgumentException("No entities to be saved.");
+        }
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src/db/data/db.dat"))) {
+            for (Entity entity : entities) {
+                oos.writeInt(entity.getEntityCode()); //write entity code
+                oos.writeObject(entity.id); //write entity ID
+                oos.writeObject(entity);
+            }
+        }
+    }
+
+    public static void load() throws IOException {
+        File file = new File("src/db/data/db.dat");
+        if (!file.exists() || file.length() == 0) {
+            return;
+        }
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            while (true) {
+                try {
+                    int entityCode = ois.readInt(); // read entity code
+                    UUID entityId = (UUID) ois.readObject(); // read entity id for TaskRef
+                    Entity entity = (Entity) ois.readObject();
+
+                    entity.id = entityId;
+                    Serializer serializer = serializers.get(entityCode);
+                    if (serializer == null) {
+                        throw new RuntimeException("No serializer registered for entity: " + entityCode);
+                    }
+
+                    entities.add(entity);
+                } catch (EOFException e) {
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Error deserializing object", e);
+        }
+    }
 }

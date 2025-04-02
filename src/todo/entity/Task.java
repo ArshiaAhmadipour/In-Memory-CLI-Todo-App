@@ -6,9 +6,10 @@ import db.Trackable;
 import db.Validator;
 import db.exception.InvalidEntityException;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Task extends Entity implements Trackable {
+public class Task extends Entity implements Trackable, Serializable {
     public static final int TASK_ENTITY_ID = 10;
     public enum Status{
         Completed , InProgress, NotStarted

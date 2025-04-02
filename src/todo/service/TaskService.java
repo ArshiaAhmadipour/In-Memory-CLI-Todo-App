@@ -271,6 +271,7 @@ public class TaskService {
             if(steps.isEmpty()){
                 System.out.println("Steps: no steps for this task.");
             }else{
+                System.out.println("Steps:");
                 for(Step step: steps){
                     System.out.print("\t+ " + step.getTitle() + "\n");
                     System.out.print("\t\tID: " + step.id + "\n");
@@ -284,9 +285,12 @@ public class TaskService {
     }
     public static void getTaskIncomplete(){
         ArrayList<Entity> Tasks = Database.getAll(Task.TASK_ENTITY_ID);
+        int counter = 1;
         for(Entity entity: Tasks){
             if(((Task) entity).getStatus().equals(Task.Status.NotStarted) || ((Task) entity).getStatus().equals(Task.Status.InProgress)){
+                System.out.println(counter + ".");
                 TaskService.getTaskByID(((Task) entity).id);
+                counter++;
             }
         }
     }

@@ -1,10 +1,14 @@
 import db.Database;
 import todo.entity.Step;
 import todo.entity.Task;
+import todo.serializer.StepSerializer;
+import todo.serializer.TaskSerializer;
 import todo.service.StepService;
 import todo.service.TaskService;
 import todo.validator.StepValidator;
 import todo.validator.TaskValidator;
+
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -13,11 +17,20 @@ public class Main {
     public static void main(String[] args) {
         Database.registerValidator(Task.TASK_ENTITY_ID, new TaskValidator());
         Database.registerValidator(Step.STEP_ENTITY_CODE, new StepValidator());
+        Database.registerSerializer(Task.TASK_ENTITY_ID, new TaskSerializer());
+        Database.registerSerializer(Step.STEP_ENTITY_CODE, new StepSerializer());
         Scanner inp = new Scanner(System.in);
+        try {
+            Database.load();
+            System.out.println("Database loaded successfully.");
+        } catch (IOException e) {
+            System.err.println("Error: Unable to load database. " + e.getMessage());
+            e.printStackTrace();
+        }
         while(true){
             System.out.print("What do you want to do? ");
             String command = inp.nextLine();
-            command = command.toLowerCase();
+            command = command.trim().toLowerCase();
             switch (command){
                 case "add task": {
                     System.out.print("Title: ");
@@ -148,10 +161,23 @@ public class Main {
                     break;
                 }
                 case "get tasks":
+                case "get all":
                 case "get all tasks":
                 case "get tasks all":{
                     TaskService.getTaskAll();
                     System.out.println("=====");
+                    break;
+                }
+
+                case "save":
+                case "save all":{
+                    try {
+                        Database.save();
+                        System.out.println("all entities saved successfully.");
+                    } catch (IOException e) {
+                        System.out.println("cannot save.");
+                        e.printStackTrace();
+                    }
                     break;
                 }
                 case "exit":{

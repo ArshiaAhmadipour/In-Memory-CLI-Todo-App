@@ -3,10 +3,11 @@ package todo.entity;
 import db.Entity;
 import db.Trackable;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class Step extends Entity implements Trackable {
+public class Step extends Entity implements Trackable, Serializable {
     public static final int STEP_ENTITY_CODE = 20;
 
     public enum Status{
