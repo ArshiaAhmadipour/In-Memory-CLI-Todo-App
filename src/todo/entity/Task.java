@@ -54,13 +54,17 @@ public class Task extends Entity implements Trackable, Serializable {
     public Entity copy() {
         String titleCopy = new String(this.getTitle());
         String descriptionCopy = new String(this.getDescription());
-        Date dueDateCopy = new Date(this.getDueDate().getTime());
+        Date dueDateCopy = new Date((this.getDueDate()).getTime());
+        Date creationDateCopy = new Date((this.getCreationDate()).getTime());
+        Date lastModificationDateCopy = new Date(this.getLastModificationDate().getTime());
         Task taskCopy = new Task();
         taskCopy.setTitle(titleCopy);
         taskCopy.setDescription(descriptionCopy);
         taskCopy.setDueDate(dueDateCopy);
         taskCopy.setStatus(this.getStatus());
         taskCopy.id = this.id;
+        taskCopy.setCreationDate(creationDateCopy);
+        taskCopy.setLastModificationDate(lastModificationDateCopy);
 
         return taskCopy;
     }
@@ -77,7 +81,7 @@ public class Task extends Entity implements Trackable, Serializable {
 
     @Override
     public Date getCreationDate() {
-        return creationDate;
+        return this.creationDate;
     }
 
     @Override
@@ -87,7 +91,7 @@ public class Task extends Entity implements Trackable, Serializable {
 
     @Override
     public Date getLastModificationDate() {
-        return lastModificationDate;
+        return this.lastModificationDate;
     }
 }
 

@@ -23,9 +23,8 @@ public class Main {
         try {
             Database.load();
             System.out.println("Database loaded successfully.");
-        } catch (IOException e) {
-            System.err.println("Error: Unable to load database. " + e.getMessage());
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
         while(true){
             System.out.print("What do you want to do? ");
@@ -91,6 +90,7 @@ public class Main {
                         case "status": {
                             System.out.print("\nWhat is the status?\n\n1.Completed\n2.In progress\n3.Not started\nyour option: ");
                             int option = inp.nextInt();
+                            inp.nextLine();
                             TaskService.updateStatus(id, option);
                             System.out.println("=====");
                             break;
@@ -126,6 +126,7 @@ public class Main {
                         case "status": {
                             System.out.print("\nWhat is the status?\n1.Completed\n2.Not started\nyour option: ");
                             int option = inp.nextInt();
+                            inp.nextLine();
                             StepService.updateStatus(id, option);
                             System.out.println("=====");
                             break;
@@ -173,7 +174,7 @@ public class Main {
                 case "save all":{
                     try {
                         Database.save();
-                        System.out.println("all entities saved successfully.");
+                        System.out.println("saved successfully.");
                     } catch (IOException e) {
                         System.out.println("cannot save.");
                         e.printStackTrace();

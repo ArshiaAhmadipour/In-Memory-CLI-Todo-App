@@ -40,7 +40,7 @@ public class Step extends Entity implements Trackable, Serializable {
 
     @Override
     public Date getCreationDate() {
-        return creationDate;
+        return this.creationDate;
     }
 
     @Override
@@ -50,23 +50,23 @@ public class Step extends Entity implements Trackable, Serializable {
 
     @Override
     public Date getLastModificationDate() {
-        return lastModificationDate;
+        return this.lastModificationDate;
     }
 
     @Override
     public Entity copy() {
         String titleCopy = new String(this.getTitle());
         UUID taskRefCopy = taskRef;
+        Date creationDateCopy = new Date((this.getCreationDate()).getTime());
+        Date lastModificationDateCopy = new Date((this.getLastModificationDate()).getTime());
         Step stepCopy = new Step();
         stepCopy.setStatus(this.getStatus());
         stepCopy.setTitle(titleCopy);
         stepCopy.taskRef = taskRefCopy;
         stepCopy.id = this.id;
-        stepCopy.setCreationDate(new Date(creationDate.getTime()));
-        if(lastModificationDate != null){
-            stepCopy.setLastModificationDate(new Date(lastModificationDate.getTime()));
+        stepCopy.setCreationDate(creationDateCopy);
+        stepCopy.setLastModificationDate(lastModificationDateCopy);
 
-        }
         return stepCopy;
     }
 
