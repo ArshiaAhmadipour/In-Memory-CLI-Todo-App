@@ -33,7 +33,7 @@ Here's what you can do in the program:
 - **get task** → Find a task by ID
 - **get incomplete tasks** → Show tasks that aren’t done yet
 - **get all tasks** → Show all tasks
-- **save** → Save everything to `db.dat`
+- **save** → Save everything to `src/db/data/db.txt`
 - **exit** → Close the program
 
 ## Common Issues
