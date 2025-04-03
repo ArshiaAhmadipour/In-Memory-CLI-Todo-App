@@ -38,7 +38,7 @@ Here's what you can do in the program:
 
 ## Common Issues
 
-- **Database won’t load?** → Try deleting `db.dat` and restarting.
+- **Database won’t load?** → Try deleting `db.txt` and restarting.
 - **Invalid command?** → Make sure you’re typing it exactly as shown.
 - **Tasks/Steps missing?** → Check if they were saved before exiting.
 
