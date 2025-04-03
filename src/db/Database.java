@@ -11,43 +11,47 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class Database {
-    private static ArrayList<Entity> entities = new ArrayList<>();
-    private static HashMap<Integer, Validator> validators = new HashMap<>();
-    private static HashMap<Integer, Serializer> serializers = new HashMap<>();
+    private static final ArrayList<Entity> entities = new ArrayList<>();
+    private static final HashMap<Integer, Validator> validators = new HashMap<>();
+    private static final HashMap<Integer, Serializer> serializers = new HashMap<>();
 
-    private Database() {}
+    private static final String FILE_PATH = "src/db/data/db.txt";
 
-    public static void add(Entity entityInput) throws InvalidEntityException{
-        if(entityInput instanceof Trackable){
+    private Database() {
+    }
+
+    public static void add(Entity entityInput) throws InvalidEntityException {
+        if (entityInput instanceof Trackable) {
             ((Trackable) entityInput).setCreationDate(new Date());
+            ((Trackable) entityInput).setLastModificationDate(new Date());
         }
         Database.isValid(entityInput);
         entityInput.id = UUID.randomUUID();
         entities.add(entityInput.copy());
     }
 
-    public static Entity get(UUID id) throws EntityNotFoundException{
-        for(Entity entity : entities){
-            if(entity.id.equals(id)){
+    public static Entity get(UUID id) throws EntityNotFoundException {
+        for (Entity entity : entities) {
+            if (entity.id.equals(id)) {
                 return entity.copy();
             }
         }
         throw new EntityNotFoundException("Entity not found.");
     }
 
-    public static ArrayList<Entity> getAll(int entityCode){
+    public static ArrayList<Entity> getAll(int entityCode) {
         ArrayList<Entity> returnList = new ArrayList<>();
-        for(Entity entity : entities){
-            if(entity.getEntityCode() == entityCode){
+        for (Entity entity : entities) {
+            if (entity.getEntityCode() == entityCode) {
                 returnList.add(entity.copy());
             }
         }
         return returnList;
     }
 
-    public static void delete(UUID id) throws EntityNotFoundException{
-        for(Entity entity : entities){
-            if(entity.id.equals(id)){
+    public static void delete(UUID id) throws EntityNotFoundException {
+        for (Entity entity : entities) {
+            if (entity.id.equals(id)) {
                 entities.remove(entity);
                 return;
             }
@@ -55,12 +59,12 @@ public class Database {
         throw new EntityNotFoundException("Entity not found to delete.");
     }
 
-    public static void update(Entity entityInput) throws EntityNotFoundException, InvalidEntityException{
-        for(Entity entity : entities){
-            if(entityInput.id.equals(entity.id)){
+    public static void update(Entity entityInput) throws EntityNotFoundException, InvalidEntityException {
+        for (Entity entity : entities) {
+            if (entityInput.id.equals(entity.id)) {
                 entities.remove(entity);
                 Database.isValid(entityInput);
-                if(entityInput instanceof Trackable){
+                if (entityInput instanceof Trackable) {
                     ((Trackable) entityInput).setLastModificationDate(new Date());
                 }
                 entities.add(entityInput.copy());
@@ -71,22 +75,22 @@ public class Database {
     }
 
     public static void registerValidator(int entityCode, Validator validator) {
-        if(validators.containsKey(entityCode)){
+        if (validators.containsKey(entityCode)) {
             throw new IllegalArgumentException("Validator already exists.");
-        }else{
+        } else {
             validators.put(entityCode, validator);
         }
     }
 
-    private static void isValid(Entity entity) throws InvalidEntityException{
-            Validator validator = validators.get(entity.getEntityCode());
-            validator.validate(entity);
+    private static void isValid(Entity entity) throws InvalidEntityException {
+        Validator validator = validators.get(entity.getEntityCode());
+        validator.validate(entity);
     } //for checking if entity is valid.
 
-    public static void registerSerializer(int entityCode, Serializer serializer){
-        if(serializers.containsKey(entityCode)){
+    public static void registerSerializer(int entityCode, Serializer serializer) {
+        if (serializers.containsKey(entityCode)) {
             throw new IllegalArgumentException("Serializer already exists.");
-        }else {
+        } else {
             serializers.put(entityCode, serializer);
         }
     }
@@ -97,45 +101,56 @@ public class Database {
     }
 
     public static void save() throws IOException {
-        System.out.println("Saving entities. Count: " + entities.size());
-        if (entities.isEmpty()) {
-            throw new IllegalArgumentException("No entities to be saved.");
-        }
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src/db/data/db.dat"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, StandardCharsets.UTF_8))) {
             for (Entity entity : entities) {
-                oos.writeInt(entity.getEntityCode()); //write entity code
-                oos.writeObject(entity.id); //write entity ID
-                oos.writeObject(entity);
+                Serializer serializer = serializers.get(entity.getEntityCode());
+                if (serializer == null) {
+                    throw new RuntimeException("missing serializer for entity code: " + entity.getEntityCode());
+                }
+                writer.write(serializer.serialize(entity));
+                writer.newLine();
             }
         }
     }
 
+
     public static void load() throws IOException {
-        File file = new File("src/db/data/db.dat");
+        File file = new File(FILE_PATH);
         if (!file.exists() || file.length() == 0) {
             return;
         }
 
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            while (true) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty()) continue;
+
+                String[] parts = line.split("\\|");
+                if (parts.length == 0) {
+                    throw new RuntimeException("invalid entity format: " + line);
+                }
+
+                int entityCode;
                 try {
-                    int entityCode = ois.readInt(); // read entity code
-                    UUID entityId = (UUID) ois.readObject(); // read entity id for TaskRef
-                    Entity entity = (Entity) ois.readObject();
+                    entityCode = Integer.parseInt(parts[0].trim());
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("invalid entity code in line: " + line);
+                }
 
-                    entity.id = entityId;
-                    Serializer serializer = serializers.get(entityCode);
-                    if (serializer == null) {
-                        throw new RuntimeException("No serializer registered for entity: " + entityCode);
-                    }
+                Serializer serializer = serializers.get(entityCode);
+                if (serializer == null) {
+                    throw new RuntimeException("no serializer found for entity code: " + entityCode);
+                }
 
+                try {
+                    Entity entity = serializer.deserialize(line);
                     entities.add(entity);
-                } catch (EOFException e) {
-                    break;
+                } catch (Exception e) {
+                    throw new RuntimeException("error deserializing entity: " + line, e);
                 }
             }
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Error deserializing object", e);
         }
     }
+
 }
