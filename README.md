@@ -13,12 +13,12 @@ CLI Todo app developed on Java using a In-Memory Database with validation system
 
 ## Project Structure
 
-- **`db/`** - Handles database stuff like saving and loading
-- **`db/exception/`** - Custom errors for when things go wrong
-- **`todo/entity/`** - Where Task and Step classes are
-- **`todo/serializer/`** - Handles saving/loading tasks and steps
-- **`todo/service/`** - Services to manage tasks and steps
-- **`todo/validator/`** - Makes sure tasks and steps are valid
+- **`db/`** - Handles database saving and loading logic.
+- **`db/exception/`** - Custom exceptions. 
+- **`todo/entity/`** - Tasks and Steps located (can be used to add other entities).
+- **`todo/serializer/`** - Uses Strings to serialize Entities.
+- **`todo/service/`** - Services to manage Entities.
+- **`todo/validator/`** - Validating Entities before adding to Database. 
 
 ## Commands
 
@@ -44,5 +44,5 @@ Here's what you can do in the program:
 
 ## Notes
 
-This project is for learning and fun. Feel free to change stuff and improve it!
+This project is for learning and fun. Feel free to change or improve it!
 
