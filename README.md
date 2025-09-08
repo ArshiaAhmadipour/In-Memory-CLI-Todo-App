@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is my AP project. It's a task management system that saves stuff using Java's object serialization. It keeps track of tasks and steps, and makes sure IDs stay the same even after saving and loading.
+CLI Todo app developed on Java using a In-Memory Database with validation systems and scalability in mind.
 
 ## Features
 
